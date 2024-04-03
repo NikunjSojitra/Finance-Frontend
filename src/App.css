@@ -1,0 +1,175 @@
+::-webkit-scrollbar {
+  width: 2px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 2px black;
+  border-radius: 5px;
+  height: 15px;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 5px;
+  -webkit-box-shadow: inset 0 0 6px black;
+  height: 15px;
+}
+.header_wrapper {
+  background-color: darkslategrey;
+  color: white;
+  padding: 8px 0;
+  text-decoration: none;
+}
+.header_wrapper a,
+h1 {
+  text-decoration: none;
+  color: white;
+  font-size: 36px;
+  font-family: "Rubik", sans-serif;
+  font-weight: 500;
+  margin: 0;
+  line-height: 50px;
+}
+
+.manage_table_wrapper tr th {
+  font-size: 16px;
+  font-family: "Rubik", sans-serif;
+  font-weight: 700;
+}
+.manage_table_wrapper tr td {
+  font-size: 16px;
+  font-family: "Rubik", sans-serif;
+  font-weight: 400;
+}
+.signup input,
+.login_wrapper input {
+  border-radius: 5px;
+  border: 1px solid black;
+  font-size: 16px;
+  font-family: "Rubik", sans-serif;
+  font-weight: 400;
+}
+.signup input:focus,
+.login_wrapper input:focus {
+  box-shadow: none;
+  outline: none;
+  border-radius: 5px;
+  border: 1px solid black;
+}
+.login_wrapper label {
+  font-size: 18px;
+  font-family: "Rubik", sans-serif;
+  font-weight: 300;
+}
+
+.sign_up,
+.login_btn {
+  padding: 8px 16px;
+  border-radius: 5px;
+  border: 1px solid black;
+  font-size: 16px;
+  font-family: "Rubik", sans-serif;
+  font-weight: 400;
+  margin-right: 15px;
+}
+.sign_up:hover,
+.login_btn:hover {
+  padding: 8px 16px;
+  border-radius: 5px;
+  border: 1px solid black;
+  background-color: black;
+  color: white;
+  transition: all 0.5s ease-in-out;
+}
+.sign_up_link {
+  text-decoration: none;
+  color: black;
+  font-size: 18px;
+  font-family: "Rubik", sans-serif;
+  border: 1px solid black;
+  padding: 8px 16px;
+  border-top-left-radius: 15px;
+  border-bottom-right-radius: 15px;
+  text-align: center;
+}
+.sign_up_link:hover {
+  border: 1px solid black;
+  border-top-right-radius: 15px;
+  border-bottom-left-radius: 15px;
+  border-top-left-radius: 0px;
+  border-bottom-right-radius: 0px;
+}
+.password_toggle_btn {
+  position: absolute;
+  right: 20px;
+  border: none;
+  background: transparent;
+}
+.login_password_toggle_btn {
+  position: absolute;
+  right: 15px;
+  border: none;
+  background: transparent;
+  top: 45%;
+}
+.manage_table_wrapper .search_bar:focus {
+  outline: none;
+  box-shadow: none;
+  border-color: inherit;
+}
+
+.employe_edit_form input:focus {
+  outline: none;
+  box-shadow: none;
+}
+.employe_dashboard h3,
+.login_wrapper h3,
+.signup h3,
+.manage_table_wrapper h3 {
+  font-size: 30px;
+  font-family: "Rubik", sans-serif;
+  font-weight: 600;
+  line-height: 24px;
+  border: 1px dashed black;
+  padding: 12px 18px;
+}
+.employe_dashboard .employee_data h5 {
+  font-size: 18px;
+  font-family: "Rubik", sans-serif;
+  font-weight: 400;
+  line-height: 24px;
+}
+.employe_dashboard Table thead tr {
+  font-size: 18px;
+  font-family: "Rubik", sans-serif;
+  font-weight: 400;
+  line-height: 24px;
+}
+.employe_dashboard button {
+  border-radius: 5px;
+  font-size: 18px;
+  font-family: "Rubik", sans-serif;
+  color: black;
+  background-color: white;
+  border: 1px solid black;
+  padding: 8px 16px;
+}
+.employe_dashboard button:hover {
+  color: white;
+  background-color: black;
+  border: 1px solid black;
+  transition: all 0.5s ease-in-out;
+}
+.footer_wrapper{
+  margin-top: 30px;
+  width: 100%;
+}
+.footer_wrapper p {
+  text-align: center;
+  font-size: 18px;
+  font-family: "Rubik", sans-serif;
+  color: white;
+  background-color: grey;
+  padding: 9px 0;
+  margin: 0;
+}
