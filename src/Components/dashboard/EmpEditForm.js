@@ -30,7 +30,7 @@ export const EmpEditForm = (props) => {
 
     e.preventDefault();
     axios
-      .patch(`http://localhost:8000/updateEmpData/${data._id}`, empEditData)
+      .patch(`https://finance-backend-jvuy.onrender.com/updateEmpData/${data._id}`, empEditData)
       .then(async (response) => {
         await addCashFlow({ credit: credit, debit: debit, interest: interest, totalAmount: totalAmount, userId: data._id });
         if (response.data.msg) {
@@ -50,7 +50,7 @@ export const EmpEditForm = (props) => {
     console.log(submitdata);
     try {
       const data = await axios.post(
-        "http://localhost:8000/updateEmpData/cash",
+        "https://finance-backend-jvuy.onrender.com/updateEmpData/cash",
         submitdata
       );
       console.log(data);

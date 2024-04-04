@@ -21,7 +21,7 @@ const Login = () => {
     //     console.warn(logResult);
     //     localStorage.setItem("user", JSON.stringify(logResult)); 
             // const { email} = data;
-            axios.post('http://localhost:8000/login',{
+            axios.post('https://finance-backend-jvuy.onrender.com/login',{
                 mode: 'no-cors',
                 email: email,
                 password: password

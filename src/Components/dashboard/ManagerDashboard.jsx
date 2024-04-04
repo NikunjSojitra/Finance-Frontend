@@ -35,7 +35,7 @@ const ManagerDashboard = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:8000/allEmployeeData")
+      .get("https://finance-backend-jvuy.onrender.com/allEmployeeData")
       .then((response) => {
         if (response.data) {
           setEmpData(response.data);
@@ -53,7 +53,7 @@ const ManagerDashboard = () => {
 
   const deleteData = async (id) => {
     axios
-      .delete(`http://localhost:8000/deleteEmployee/${id}`)
+      .delete(`https://finance-backend-jvuy.onrender.com/deleteEmployee/${id}`)
       .then((response) => {
         if (response.data.msg) {
           alert(response.data.msg);

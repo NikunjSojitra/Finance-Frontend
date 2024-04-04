@@ -16,7 +16,7 @@ const EmployeeDashboard = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:8000/allEmployeeData")
+      .get("https://finance-backend-jvuy.onrender.com/allEmployeeData")
       .then((response) => {
         if (response.data) {
 

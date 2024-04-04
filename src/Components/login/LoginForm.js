@@ -24,7 +24,7 @@ const LoginForm = () => {
     console.warn("data", email, password);
     e.preventDefault();
     axios
-      .post("http://localhost:8000/login", {
+      .post("https://finance-backend-jvuy.onrender.com/login", {
         mode: "no-cors",
         email: email,
         password: password,
