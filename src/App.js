@@ -25,23 +25,23 @@ function App() {
 
   return (
     <div className="App">
-      {/* {websiteVisible ? (
-        <BrowserRouter>
-          <Header />
-          <Routes>
-            <Route path="/" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/manager-dashboard" element={<ManagerDashboard />} />
-            <Route
-              path="/employee-dashboard/:id"
-              element={<EmployeeDashboard />}
-            />
-            <Route path="/user-name" element={<Name />} />
-          </Routes>
-        </BrowserRouter>
-      ) : (
-        <h1 style={{ visibility: "hidden" }}>Clicks: {clickCount}</h1>
-      )} */}
+        {/* {websiteVisible ? (
+          <BrowserRouter>
+            <Header />
+            <Routes>
+              <Route path="/" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/manager-dashboard" element={<ManagerDashboard />} />
+              <Route
+                path="/employee-dashboard/:id"
+                element={<EmployeeDashboard />}
+              />
+              <Route path="/user-name" element={<Name />} />
+            </Routes>
+          </BrowserRouter>
+        ) : (
+          <h1 style={{ visibility: "hidden" }}>Clicks: {clickCount}</h1>
+        )} */}
 
       <BrowserRouter>
         <Header />
