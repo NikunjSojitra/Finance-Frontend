@@ -9,23 +9,23 @@ import Header from "./Components/Comman/Header";
 import { useState } from "react";
 
 function App() {
-  const [clickCount, setClickCount] = useState(0);
-  const [websiteVisible, setWebsiteVisible] = useState(false);
+  // const [clickCount, setClickCount] = useState(0);
+  // const [websiteVisible, setWebsiteVisible] = useState(false);
 
-  const handleClick = () => {
-    const newClickCount = clickCount + 1;
-    setClickCount(newClickCount);
-    // console.log(setClickCount);
-    console.log(newClickCount);
+  // const handleClick = () => {
+  //   const newClickCount = clickCount + 1;
+  //   setClickCount(newClickCount);
+  //   // console.log(setClickCount);
+  //   console.log(newClickCount);
 
-    if (newClickCount >= 5) {
-      setWebsiteVisible(true);
-    }
-  };
+  //   if (newClickCount >= 5) {
+  //     setWebsiteVisible(true);
+  //   }
+  // };
 
   return (
-    <div className="App" onClick={handleClick}>
-      {websiteVisible ? (
+    <div className="App">
+      {/* {websiteVisible ? (
         <BrowserRouter>
           <Header />
           <Routes>
@@ -41,7 +41,21 @@ function App() {
         </BrowserRouter>
       ) : (
         <h1 style={{ visibility: "hidden" }}>Clicks: {clickCount}</h1>
-      )}
+      )} */}
+
+      <BrowserRouter>
+        <Header />
+        <Routes>
+          <Route path="/" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/manager-dashboard" element={<ManagerDashboard />} />
+          <Route
+            path="/employee-dashboard/:id"
+            element={<EmployeeDashboard />}
+          />
+          <Route path="/user-name" element={<Name />} />
+        </Routes>
+      </BrowserRouter>
     </div>
   );
 }
