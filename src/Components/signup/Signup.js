@@ -212,7 +212,7 @@ const SignUp = () => {
               </div>
 
               <div className="col-md-4 d-flex align-items-start justify-content-start mb-3 ">
-                <div>
+                {/* <div>
                   <input
                     type="radio"
                     className="mx-2 "
@@ -223,7 +223,7 @@ const SignUp = () => {
                     onChange={(e) => setRole(e.target.value)}
                   />
                   Admin
-                </div>
+                </div> */}
                 <div>
                   <input
                     type="radio"

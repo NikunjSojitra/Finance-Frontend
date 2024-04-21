@@ -86,7 +86,7 @@ const ManagerDashboard = () => {
 
             <Row className="mt-5 justify-content-end">
               <Col lg={4}  className="text-end mb-sm-2" >
-                <Link className="btn sign_up" to="/">
+                <Link className="btn sign_up" to="/signup">
                   Add User
                 </Link>
               </Col>
