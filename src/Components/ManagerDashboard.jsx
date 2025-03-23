@@ -144,7 +144,7 @@ function ManagerDashboard() {
   const addUserAmountFlow = async (submitdata) => {
     try {
       const data = await axios.post(
-        "http://localhost:8000/updateEmpData/usercash",
+        "https://finance-backend-jvuy.onrender.com/updateEmpData/usercash",
         submitdata
       );
       console.log("User Amount Flow Added:", data);
@@ -158,7 +158,7 @@ function ManagerDashboard() {
 
   const fetchEmpData = async () => {
     try {
-      const response = await axios.get("http://localhost:8000/allEmployeeData");
+      const response = await axios.get("https://finance-backend-jvuy.onrender.com/allEmployeeData");
       const userData = response.data.map((item) => {
         return {
           user: item.user,

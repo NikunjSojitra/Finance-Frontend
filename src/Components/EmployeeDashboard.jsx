@@ -48,9 +48,9 @@ const EmployeeDashboard = () => {
 
   const fetchEmpData = async () => {
     try {
-      const response = await axios.get("http://localhost:8000/allEmployeeData");
+      const response = await axios.get("https://finance-backend-jvuy.onrender.com/allEmployeeData");
       const userData = response.data.find((e) => e.user._id === id);
-      const role = localStorage.getItem("role");
+      const role = Storage.getItem("role");
       setRole(role);
       console.log('userData :>> ', role);
       if (userData && userData.latestTransaction) {
