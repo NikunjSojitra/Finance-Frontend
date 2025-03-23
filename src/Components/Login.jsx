@@ -1,57 +1,59 @@
-import axios from "axios";
+// eslint-disable-next-line no-unused-vars
 import React, { useState } from "react";
+import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { BsEyeSlash, BsEye } from "react-icons/bs";
 
-const LoginForm = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [role, setRole] = useState("");
-  const [passwordType, setPasswordType] = useState("password");
-  const navigate = useNavigate();
- 
 
-  const togglePassword = (event) => {
-    event.preventDefault();
-    if (passwordType === "password") {
-      setPasswordType("text");
-      return;
-    }
-    setPasswordType("password");
-  };
 
-  const handleSubmit = async (e) => {
-    console.warn("data", email, password);
-    e.preventDefault();
-    axios
-      .post("https://finance-backend-jvuy.onrender.com/login", {
-        mode: "no-cors",
-        email: email,
-        password: password,
-      })
-      .then((response) => {
-        if (response.data.token) {
-          if (response.data.user.role == "Admin") {
-            navigate("/manager-dashboard");
-            console.warn(response.data);
+function Login() {
+
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [passwordType, setPasswordType] = useState("password");
+    const navigate = useNavigate();
+   
+  
+    const togglePassword = (event) => {
+      event.preventDefault();
+      if (passwordType === "password") {
+        setPasswordType("text");
+        return;
+      }
+      setPasswordType("password");
+    };
+  
+    const handleSubmit = async (e) => {
+      console.warn("data", email, password);
+      e.preventDefault();
+      axios
+        .post("https://finance-backend-jvuy.onrender.com/login", {
+          mode: "no-cors",
+          email: email,
+          password: password,
+        })
+        .then((response) => {
+          if (response.data.token) {
+            if (response.data.user.role == "Admin") {
+              navigate("/manager-dashboard");
+              console.warn(response.data);
+              localStorage.setItem("role",response.data.user.role);
+            } else {
+              let empRes = response.data.user;
+              navigate(`/employee-dashboard/${empRes._id}`, {
+                state: { empRes },
+              });
+              console.warn(response.data);
+            }
           } else {
-            let empRes = response.data.user;
-            navigate(`/employee-dashboard/${empRes._id}`, {
-              state: { empRes },
-            });
-            console.warn(response.data);
+            console.warn(response);
+            alert(response.data.msg);
           }
-        } else {
-          console.warn(response);
-          alert(response.data.msg);
-        }
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  };
-
- 
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    };
 
   return (
     <div >
@@ -121,7 +123,7 @@ const LoginForm = () => {
           </div>
         </div>
     </div>
-  );
-};
+  )
+}
 
-export default LoginForm;
+export default Login
