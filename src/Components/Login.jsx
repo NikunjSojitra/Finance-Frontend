@@ -7,7 +7,7 @@ import { BsEyeSlash, BsEye } from "react-icons/bs";
 
 
 function Login() {
-
+const [loading, setLoading] = useState(false);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [passwordType, setPasswordType] = useState("password");
@@ -24,7 +24,12 @@ function Login() {
     };
   
     const handleSubmit = async (e) => {
-      console.warn("data", email, password);
+
+      if(!email || !password) {
+        alert("Please fill all the fields");
+        return;
+      }
+      setLoading(true);
       e.preventDefault();
       axios
         .post("https://finance-backend-jvuy.onrender.com/login", {
@@ -36,14 +41,13 @@ function Login() {
           if (response.data.token) {
             if (response.data.user.role == "Admin") {
               navigate("/manager-dashboard");
-              console.warn(response.data);
-              localStorage.setItem("role",response.data.user.role);
+              setLoading(false);
+              localStorage.setItem("role",response.data.user.role); 
             } else {
               let empRes = response.data.user;
               navigate(`/employee-dashboard/${empRes._id}`, {
                 state: { empRes },
               });
-              console.warn(response.data);
             }
           } else {
             console.warn(response);
@@ -56,11 +60,14 @@ function Login() {
     };
 
   return (
+    <>
+    {loading ?
+     <div className="loader-4 center"><span></span></div>
+        :
     <div >
         <div className="login_wrapper my-5">
           <div className="container">
             <div className="row">
-              {/* <div className="col-md-3"></div> */}
               <div className="col-md-6 col-sm-12 mx-auto ">
                 <form method="post">
                   <div className="login-wrap">
@@ -75,6 +82,7 @@ function Login() {
                         onChange={(e) => setEmail(e.target.value)}
                         value={email}
                         aria-describedby="emailHelp"
+                        required = {true}
                       />
                     </div>
 
@@ -87,6 +95,7 @@ function Login() {
                         onChange={(e) => setPassword(e.target.value)}
                         value={password}
                         aria-describedby="emailHelp"
+                        required = {true}
                       />
                       <button
                         onClick={togglePassword}
@@ -118,11 +127,12 @@ function Login() {
                   </div>
                 </form>
               </div>
-              {/* <div className="col-md-3"></div> */}
             </div>
           </div>
         </div>
     </div>
+    }
+    </>
   )
 }
 

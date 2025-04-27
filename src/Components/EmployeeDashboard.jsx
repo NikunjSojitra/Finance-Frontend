@@ -16,7 +16,6 @@ import {
   ValidationModule,
   AllCommunityModule,
 } from "ag-grid-community";
-import ManagerDashboard from "./ManagerDashboard";
 
 ModuleRegistry.registerModules([
   AllCommunityModule,
@@ -32,33 +31,47 @@ const EmployeeDashboard = () => {
 
   const { id } = useParams();
   const [payment, setPayment] = useState([]);
+  const [paydate, setPaydate] = useState([]);
   const [rowData, setRowData] = useState([]);
   const [empData, setEmpData] = useState([]);
   const [role, setRole] = useState("");
+  const [loader, setLoader] = useState(false);
+
   const [colDefs, setColDefs] = useState([
-    { headerName: 'Sr. No.', valueGetter: 'node.rowIndex + 1', width: 100 },
+    {  valueGetter: 'node.rowIndex + 1', width: 50 },
     {
-      headerName: "Date", field: "createdAt", valueFormatter: (params) =>
-        params.value ? new Date(params.value).toLocaleDateString() : ""
+      headerName: "Date",
+      field: "date", 
+      valueFormatter: (params) =>
+        params.value
+          ? new Date(params.value).toLocaleDateString()
+          : params.data.createdAt
+          ? new Date(params.data.createdAt).toLocaleDateString()
+          : "",
+      width: 120,
     },
-    { headerName: "Daily Amount	", field: "credit" },
-    { headerName: "Remaining Amount	", field: "totalAmount" },
+    { headerName: "Daily Amount	", field: "credit", width: 120 },
+    { headerName: "Remaining Amount	", field: "totalAmount", width: 120 },
   ])
   const gridRef = useRef(null);
 
   const fetchEmpData = async () => {
+    setLoader(true);
     try {
       const response = await axios.get("https://finance-backend-jvuy.onrender.com/allEmployeeData");
       const userData = response.data.find((e) => e.user._id === id);
-      const role = Storage.getItem("role");
+      const userName = `${userData.user.fname} ${userData.user.lname}`;
+
+      const role = localStorage.getItem("role");
       setRole(role);
-      console.log('userData :>> ', role);
       if (userData && userData.latestTransaction) {
         setEmpData(userData);
-        setRowData(userData.latestTransaction); // Ensure data is set
+        setRowData(userData.latestTransaction);
+        setLoader(false);
       } else {
         console.warn("No transactions found for this user.");
-        setRowData([]); // Set empty data if transactions are missing
+        setRowData([]);
+        setLoader(false);
       }
     } catch (error) {
       console.error("Error fetching employee data:", error);
@@ -69,41 +82,47 @@ const EmployeeDashboard = () => {
   const paymentSubmit = async (e) => {
     e.preventDefault();
     const parsedPayment = parseFloat(payment);
-
-    // Get the last remaining amount from the data
     const totalPendingAmount = empData.userAmount.totalAmount;
     const lastAddedAmount = empData.latestTransaction[0]?.totalAmount;
     let finalAmount;
-    console.log('lastAddedAmount :>> ', lastAddedAmount);
-
+  
     if (!isNaN(parsedPayment) && parsedPayment > 0) {
       if (lastAddedAmount) {
         finalAmount = lastAddedAmount - parsedPayment;
       } else {
         finalAmount = totalPendingAmount - parsedPayment;
       }
-
+  
+      const transactionDate = paydate || new Date().toISOString().split("T")[0];
+  
       try {
+        // Update employee data
         const response = await axios.post("https://finance-backend-jvuy.onrender.com/updateEmpData/cash", {
           userId: id,
           credit: parsedPayment,
+          date: transactionDate, 
           totalAmount: finalAmount,
         });
-
-        console.log('response :>> ', response);
-        console.log('finalAmount :>> ', finalAmount);
-
+  
+        const newTransaction = {
+          credit: parsedPayment,
+          date: transactionDate,
+          totalAmount: finalAmount,
+        };
+  
+        setRowData((prevRowData) => [newTransaction, ...prevRowData]);
+  
         setEmpData((prevState) => ({
           ...prevState,
           userAmount: {
             ...prevState.userAmount,
-            totalAmount: finalAmount, // Updating the total amount in state
-            remainingAmount: finalAmount // Ensuring remainingAmount is also updated
-          }
+            totalAmount: finalAmount, 
+            remainingAmount: finalAmount, 
+          },
         }));
-
+  
         setPayment("");
-        fetchEmpData();
+        setPaydate("");
       } catch (error) {
         console.error("Error adding payment:", error);
       }
@@ -123,7 +142,6 @@ const EmployeeDashboard = () => {
       // return colDefs.map((col) => node.data[col.field]);
     });
 
-    console.log('rows :>> ', rows);
 
     // Add the headers
     autoTable(doc, {
@@ -135,7 +153,7 @@ const EmployeeDashboard = () => {
     });
 
     // Save the PDF
-    doc.save('grid-data.pdf');
+    doc.save(`${empData.user.fname}-${empData.user.lname}.pdf`);
   };
 
   useEffect(() => { fetchEmpData() }, []);
@@ -144,58 +162,82 @@ const EmployeeDashboard = () => {
 
   return (
     <>
+    {loader ?
+      <div className="loader-4 center"><span></span></div>  
+        :
 
-      <main>
+      <main className="my-4"> 
         <section>
           <div className="container">
 
             {role === "Admin" ?
-              <Link to='/manager-dashboard' className="btn btn-dark"> Dashboard </Link>
+              <Link to='/manager-dashboard' className="btn btn-dark mb-3"> Dashboard </Link>
               : ''}
             <h3 className="text-center">- User's Dashboard - </h3>
 
             <div className="employee_data my-5">
               <div className="row">
-
                 <div className="col-lg-6 col-md-6 col-sm-12">
-                  <div className="d-flex">
-                    <div className="pr-3">
-                      <h5>ID :</h5>
-                      <h5>Name :</h5>
-                      <h5>Email :</h5>
-                      <h5>Mobile :</h5>
-                    </div>
-                    <div className="px-3">
-                      <h5>{empData ? empData?.user?._id : ""}</h5>
-                      <h5>
-                        {empData?.user
-                          ? `${empData?.user?.fname} ${empData?.user?.lname}`
-                          : ""}
-                      </h5>
-                      <h5>{empData?.user ? empData?.user?.email : ""}</h5>
-                      <h5>{empData?.user ? empData?.user?.mobile : ""}</h5>
-                    </div>
-                  </div>
+                  <table border="1" className="table table-bordered">
+                    <tbody>
+                      <tr>
+                        <td style={{ width: '100px' }}>Name</td>
+                        <td>
+                          <h5>
+                            {empData?.user
+                              ? `${empData?.user?.fname} ${empData?.user?.lname}`
+                              : ""}
+                          </h5>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>Email</td>
+                        <td>
+                          <h5>{empData?.user ? empData?.user?.email : ""}</h5>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>Mobile</td>
+                        <td>
+                          <h5>{empData?.user ? empData?.user?.mobile : ""}</h5>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
                 <div className="col-lg-6 col-md-6 col-sm-12">
-                  <div className="d-flex">
-                    <div className="pr-3">
-                      <h5>Amount :</h5>
-                      <h5>Interest :</h5>
-                      <h5>Payment :</h5>
-                      <h5>Remainig Amount :</h5>
-                    </div>
-                    <div className="px-3">
-                      <h5>
-                        {empData ? empData?.userAmount?.credit : "No credit available"}
-                      </h5>
-                      <h5>{empData ? empData?.userAmount?.interest : ""}</h5>
-                      <h5>{empData ? empData?.userAmount?.debit : ""}</h5>
-                      <h5>
-                        {empData ? empData?.userAmount?.totalAmount : "1"}
-                      </h5>
-                    </div>
-                  </div>
+                  <table border="1" className="table table-bordered ">
+                    <tbody>
+                      <tr>
+                        <td style={{ width: '100px' }}>Amount</td>
+                        <td>
+                          <h5>
+                            {empData ? empData?.userAmount?.credit : "No credit available"}
+                          </h5>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>Interest</td>
+                        <td>
+                          <h5>{empData ? empData?.userAmount?.interest : ""}</h5>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>Payment </td>
+                        <td>
+                          <h5>{empData ? empData?.userAmount?.debit : ""}</h5>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>Remainig Amount</td>
+                        <td>
+                          <h5>
+                            {empData ? empData?.userAmount?.totalAmount : "1"}
+                          </h5>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
               </div>
             </div>
@@ -203,12 +245,30 @@ const EmployeeDashboard = () => {
             <hr />
 
             {role === "Admin" ?
-              <form onSubmit={paymentSubmit} >
-                <div className="d-flex gap-3">
-                  <input type="number" value={payment} onChange={(e) => setPayment(e.target.value)} name="payment" className="form-control w-50" placeholder="Enter Daily Amount" id="payment" />
-                  <button type="submit" className="btn btn-success">Add</button>
-                </div>
-              </form> : ''}
+             <form onSubmit={paymentSubmit}>
+             <div className="d-lg-flex d-sm-block gap-3">
+               <input
+                 type="number"
+                 value={payment}
+                 onChange={(e) => setPayment(e.target.value)}
+                 name="payment"
+                 className="form-control w-75 mb-lg-0 mb-2"
+                 placeholder="Enter Daily Amount"
+                 id="payment"
+                 required
+               />
+               <input
+                 type="date"
+                 value={paydate}
+                 onChange={(e) => setPaydate(e.target.value)}
+                 name="paydate"
+                 className="form-control w-75 mb-lg-0 mb-2"
+                 placeholder="date"
+                 id="paydate"
+               />
+               <button type="submit" className="btn btn-success">Add</button>
+             </div>
+           </form> : ''}
 
 
             <div style={{ height: 500, marginTop: "50px" }}>
@@ -228,7 +288,7 @@ const EmployeeDashboard = () => {
           </div>
         </section>
       </main>
-
+}
     </>
   )
 }
