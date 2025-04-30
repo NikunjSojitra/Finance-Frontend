@@ -37,7 +37,7 @@ function Signup() {
 
     e.preventDefault();
     axios
-      .post("https://finance-backend-jvuy.onrender.com/signup", {
+      .post("http://localhost:8000/signup", {
         mode: "no-cors",
         fname,
         lname,

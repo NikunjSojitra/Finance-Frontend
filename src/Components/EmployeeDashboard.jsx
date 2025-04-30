@@ -5,7 +5,8 @@ import axios from "axios";
 import { AgGridReact } from "ag-grid-react";
 import { useParams } from "react-router-dom";
 import { jsPDF } from 'jspdf';
-import { autoTable } from 'jspdf-autotable'
+import { autoTable } from 'jspdf-autotable';
+import deleteimg from "./../assets/delete.png";
 import "jspdf-autotable";
 import {
   ClientSideRowModelModule,
@@ -31,7 +32,7 @@ const EmployeeDashboard = () => {
 
   const { id } = useParams();
   const [payment, setPayment] = useState([]);
-  const [paydate, setPaydate] = useState([]);
+  const [paydate, setPaydate] = useState([ new Date().toISOString().split("T")[0] ]);
   const [rowData, setRowData] = useState([]);
   const [empData, setEmpData] = useState([]);
   const [role, setRole] = useState("");
@@ -52,13 +53,34 @@ const EmployeeDashboard = () => {
     },
     { headerName: "Daily Amount	", field: "credit", width: 120 },
     { headerName: "Remaining Amount	", field: "totalAmount", width: 120 },
+    {
+          headerName: "Action", field: "",
+          cellRenderer: (params) => {
+            console.log('params', params.data._id)
+            return (
+              <div style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
+                {/* Delete Icon */}
+                <img
+                  src={deleteimg}
+                  alt="Delete"
+                  style={{ width: '25px', height: '25px', cursor: 'pointer', marginTop: '7px' }}
+                  onClick={() => {
+                    const transId = params.data._id;  
+                    console.log('Deleting user with ID:', transId);
+                    deleteData(transId);
+                  }}
+                />
+              </div>
+            );
+          }, width: 80
+        },
   ])
   const gridRef = useRef(null);
 
   const fetchEmpData = async () => {
     setLoader(true);
     try {
-      const response = await axios.get("https://finance-backend-jvuy.onrender.com/allEmployeeData");
+      const response = await axios.get("http://localhost:8000/allEmployeeData");
       const userData = response.data.find((e) => e.user._id === id);
       const userName = `${userData.user.fname} ${userData.user.lname}`;
 
@@ -78,8 +100,8 @@ const EmployeeDashboard = () => {
     }
   };
 
-
   const paymentSubmit = async (e) => {
+    setLoader(true);
     e.preventDefault();
     const parsedPayment = parseFloat(payment);
     const totalPendingAmount = empData.userAmount.totalAmount;
@@ -93,11 +115,11 @@ const EmployeeDashboard = () => {
         finalAmount = totalPendingAmount - parsedPayment;
       }
   
-      const transactionDate = paydate || new Date().toISOString().split("T")[0];
+      const transactionDate = paydate ;
   
       try {
         // Update employee data
-        const response = await axios.post("https://finance-backend-jvuy.onrender.com/updateEmpData/cash", {
+        const response = await axios.post("http://localhost:8000/updateEmpData/cash", {
           userId: id,
           credit: parsedPayment,
           date: transactionDate, 
@@ -110,7 +132,7 @@ const EmployeeDashboard = () => {
           totalAmount: finalAmount,
         };
   
-        setRowData((prevRowData) => [newTransaction, ...prevRowData]);
+        // setRowData((prevRowData) => [newTransaction, ...prevRowData]);
   
         setEmpData((prevState) => ({
           ...prevState,
@@ -122,7 +144,9 @@ const EmployeeDashboard = () => {
         }));
   
         setPayment("");
-        setPaydate("");
+        setPaydate(new Date().toISOString().split("T")[0]);
+        fetchEmpData(); 
+        setLoader(false);
       } catch (error) {
         console.error("Error adding payment:", error);
       }
@@ -130,6 +154,26 @@ const EmployeeDashboard = () => {
       console.error("Please enter a valid payment amount.");
     }
   };
+
+
+  const deleteData = async (transId) => {
+    try {
+      console.log("Deleting transaction with ID:", transId); 
+      const response = await axios.delete(`http://localhost:8000/deletetransaction/${transId}`);
+      console.log('trans :', response.data);
+  
+      if (response.data.msg) {
+        alert(response.data.msg);
+        fetchEmpData(); 
+      } else {
+        alert("Failed to delete the transaction. Please try again.");
+      }
+    } catch (err) {
+      console.error("Error deleting data:", err.response ? err.response.data : err.message);
+      alert("An error occurred while deleting the transaction. Please check the console for details.");
+    }
+  };
+  
 
   const exportToPdf = () => {
     const doc = new jsPDF();
@@ -139,7 +183,6 @@ const EmployeeDashboard = () => {
       const srNo = node.rowIndex + 1;
       const date = node.data.createdAt ? new Date(node.data.createdAt).toLocaleDateString() : "";
       return [srNo, date, node.data.credit, node.data.totalAmount];
-      // return colDefs.map((col) => node.data[col.field]);
     });
 
 

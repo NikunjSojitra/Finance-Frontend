@@ -60,7 +60,7 @@ const PendingUser = () => {
 
         setLoader(true);
         try {
-            const response = await axios.get("https://finance-backend-jvuy.onrender.com/allEmployeeData");
+            const response = await axios.get("http://localhost:8000/allEmployeeData");
 
             const filteredData = response.data.filter((item) => {
                 const transactionDate = new Date(item.latestTransaction[0]?.createdAt).toISOString().split('T')[0];

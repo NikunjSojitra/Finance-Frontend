@@ -123,7 +123,7 @@ function ManagerDashboard() {
     try {
       // Perform the patch request to update employee data
       const response = await axios.patch(
-        `https://finance-backend-jvuy.onrender.com/updateEmpData/${id}`,
+        `http://localhost:8000/updateEmpData/${id}`,
         empEditData
       );
 
@@ -149,7 +149,7 @@ function ManagerDashboard() {
   const addUserAmountFlow = async (submitdata) => {
     try {
       const data = await axios.post(
-        "https://finance-backend-jvuy.onrender.com/updateEmpData/usercash",
+        "http://localhost:8000/updateEmpData/usercash",
         submitdata
       );
       console.log("User Amount Flow Added:", data);
@@ -164,7 +164,7 @@ function ManagerDashboard() {
   const fetchEmpData = async () => {
     setLoader(true);
     try {
-      const response = await axios.get("https://finance-backend-jvuy.onrender.com/allEmployeeData");
+      const response = await axios.get("http://localhost:8000/allEmployeeData");
       const userData = response.data.map((item) => {
         return {
           user: item.user,

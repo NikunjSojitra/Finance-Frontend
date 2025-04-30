@@ -32,7 +32,7 @@ const [loading, setLoading] = useState(false);
       setLoading(true);
       e.preventDefault();
       axios
-        .post("https://finance-backend-jvuy.onrender.com/login", {
+        .post("http://localhost:8000/login", {
           mode: "no-cors",
           email: email,
           password: password,
