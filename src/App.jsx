@@ -26,47 +26,47 @@ function App() {
     });
   };
 
-  useEffect(() => {
-    // Ask for notification permission
-    Notification.requestPermission().then((permission) => {
-      if (permission === 'granted') {
-        getToken(messaging, {
-          vapidKey: 'YOUR_PUBLIC_VAPID_KEY',
-        })
-          .then((currentToken) => {
-            if (currentToken) {
-              console.log('FCM Token:', currentToken);
-              // ✅ Send token to your backend to save
-            } else {
-              console.log('No registration token available.');
-            }
-          })
-          .catch((err) => {
-            console.log('An error occurred while retrieving token.', err);
-          });
-      }
-    });
+  // useEffect(() => {
+  //   // Ask for notification permission
+  //   Notification.requestPermission().then((permission) => {
+  //     if (permission === 'granted') {
+  //       getToken(messaging, {
+  //         vapidKey: 'YOUR_PUBLIC_VAPID_KEY',
+  //       })
+  //         .then((currentToken) => {
+  //           if (currentToken) {
+  //             console.log('FCM Token:', currentToken);
+  //             // ✅ Send token to your backend to save
+  //           } else {
+  //             console.log('No registration token available.');
+  //           }
+  //         })
+  //         .catch((err) => {
+  //           console.log('An error occurred while retrieving token.', err);
+  //         });
+  //     }
+  //   });
 
-    // Handle foreground messages
-    onMessage(messaging, (payload) => {
-      console.log('Message received in foreground: ', payload);
-      alert(payload.notification?.title || 'New Notification');
-    });
-  }, []);
+  //   // Handle foreground messages
+  //   onMessage(messaging, (payload) => {
+  //     console.log('Message received in foreground: ', payload);
+  //     alert(payload.notification?.title || 'New Notification');
+  //   });
+  // }, []);
 
 
-  useEffect(() => {
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker
-        .register('/firebase-messaging-sw.js')
-        .then((registration) => {
-          console.log('Service Worker registered:', registration);
-        })
-        .catch((error) => {
-          console.error('Service Worker registration failed:', error);
-        });
-    }
-  }, []);
+  // useEffect(() => {
+  //   if ('serviceWorker' in navigator) {
+  //     navigator.serviceWorker
+  //       .register('/firebase-messaging-sw.js')
+  //       .then((registration) => {
+  //         console.log('Service Worker registered:', registration);
+  //       })
+  //       .catch((error) => {
+  //         console.error('Service Worker registration failed:', error);
+  //       });
+  //   }
+  // }, []);
 
   return (
     <>

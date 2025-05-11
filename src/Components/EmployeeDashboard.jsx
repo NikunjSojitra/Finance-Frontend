@@ -80,7 +80,7 @@ const EmployeeDashboard = () => {
   const fetchEmpData = async () => {
     setLoader(true);
     try {
-      const response = await axios.get("http://localhost:8000/allEmployeeData");
+      const response = await axios.get("https://finance-backend-jvuy.onrender.com/allEmployeeData");
       const userData = response.data.find((e) => e.user._id === id);
       const userName = `${userData.user.fname} ${userData.user.lname}`;
 
@@ -119,7 +119,7 @@ const EmployeeDashboard = () => {
   
       try {
         // Update employee data
-        const response = await axios.post("http://localhost:8000/updateEmpData/cash", {
+        const response = await axios.post("https://finance-backend-jvuy.onrender.com/updateEmpData/cash", {
           userId: id,
           credit: parsedPayment,
           date: transactionDate, 
@@ -159,11 +159,11 @@ const EmployeeDashboard = () => {
   const deleteData = async (transId) => {
     try {
       console.log("Deleting transaction with ID:", transId); 
-      const response = await axios.delete(`http://localhost:8000/deletetransaction/${transId}`);
+      const response = await axios.delete(`https://finance-backend-jvuy.onrender.com/deletetransaction/${transId}`);
       console.log('trans :', response.data);
   
       if (response.data.msg) {
-        alert(response.data.msg);
+        alert("Are you sure you want to delete this transaction?");
         fetchEmpData(); 
       } else {
         alert("Failed to delete the transaction. Please try again.");

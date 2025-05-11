@@ -5,10 +5,10 @@ import axios from "axios";
 import { BsEyeSlash, BsEye } from "react-icons/bs";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+import { v4 as uuidv4 } from "uuid"; 
 
 function Signup() {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false); 
   const [fname, setFname] = useState("");
   const [lname, setLname] = useState("");
   const [email, setEmail] = useState("");
@@ -36,8 +36,16 @@ function Signup() {
     }
 
     e.preventDefault();
+    let adminId = null;
+
+    if (role === "Admin") {
+      adminId = uuidv4(); 
+      localStorage.setItem("adminId", adminId);
+    } else {
+      adminId = localStorage.getItem("adminId"); 
+    }
     axios
-      .post("http://localhost:8000/signup", {
+      .post("https://finance-backend-jvuy.onrender.com/signup", {
         mode: "no-cors",
         fname,
         lname,
@@ -46,6 +54,7 @@ function Signup() {
         password,
         house,
         role,
+        adminId, 
       })
       .then((response) => {
         if (response.data.msg) {
@@ -113,7 +122,7 @@ function Signup() {
                     type="email"
                     className="form-control pl-5"
                     id="validationCustom03"
-                    placeholder=" Email"
+                    placeholder="Email"
                     name="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
@@ -124,7 +133,8 @@ function Signup() {
                 <div className="col-md-6 d-flex align-items-center mb-3">
                   <i className="zmdi zmdi-phone"></i>
                   <input
-                    type="number"
+                    type="tel"
+                    maxLength={10}
                     className="form-control pl-5"
                     id="validationCustom04"
                     placeholder="Mobile Number"
@@ -165,7 +175,7 @@ function Signup() {
                     type="text"
                     className="form-control pl-5"
                     id="validationCustom03"
-                    placeholder=" House No."
+                    placeholder="House No."
                     name="house"
                     value={house}
                     onChange={(e) => setHouse(e.target.value)}
@@ -174,9 +184,10 @@ function Signup() {
                 </div>
 
                 <div className="col-md-4 d-flex align-items-start justify-content-start mb-3 ">
-                  {/* <div>
+                  <div>
                   <input
                     type="radio"
+                    id="admin"
                     className="mx-2 "
                     required="required"
                     name="empType"  
@@ -184,8 +195,10 @@ function Signup() {
                     checked={role === "Admin"}
                     onChange={(e) => setRole(e.target.value)}
                   />
-                  Admin
-                </div> */}
+                   <label className="form-check-label" htmlFor="admin">
+                      Admin
+                    </label>
+                </div>
                   <div>
                     <input
                       type="radio"

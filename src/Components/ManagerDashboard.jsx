@@ -44,7 +44,7 @@ function ManagerDashboard() {
   const navigate = useNavigate();
   // Column Definitions: Defines the columns to be displayed.
   const [colDefs, setColDefs] = useState([
-    {  valueGetter: 'node.rowIndex + 1', width: 50 },
+    { valueGetter: 'node.rowIndex + 1', width: 50 },
     {
       headerName: "Name", field: "userName",
       cellRenderer: (params) => (
@@ -123,7 +123,7 @@ function ManagerDashboard() {
     try {
       // Perform the patch request to update employee data
       const response = await axios.patch(
-        `http://localhost:8000/updateEmpData/${id}`,
+        `https://finance-backend-jvuy.onrender.com/updateEmpData/${id}`,
         empEditData
       );
 
@@ -149,7 +149,7 @@ function ManagerDashboard() {
   const addUserAmountFlow = async (submitdata) => {
     try {
       const data = await axios.post(
-        "http://localhost:8000/updateEmpData/usercash",
+        "https://finance-backend-jvuy.onrender.com/updateEmpData/usercash",
         submitdata
       );
       console.log("User Amount Flow Added:", data);
@@ -162,9 +162,11 @@ function ManagerDashboard() {
   // table data api
 
   const fetchEmpData = async () => {
+    let adminId = localStorage.getItem("adminId");
+    console.log('adminId', adminId)
     setLoader(true);
     try {
-      const response = await axios.get("http://localhost:8000/allEmployeeData");
+      const response = await axios.get("https://finance-backend-jvuy.onrender.com/allEmployeeData");
       const userData = response.data.map((item) => {
         return {
           user: item.user,
@@ -173,7 +175,10 @@ function ManagerDashboard() {
         }
       }
       );
-      setRowData(userData);
+      console.log('userData', userData)
+      const filteredUserData = userData.filter((item) => item.user.role === "User" && item.user.adminId === adminId);
+      setRowData(filteredUserData);
+      console.log('filteredUserData', filteredUserData)
       setLoader(false);
     }
     catch (error) {
@@ -183,19 +188,20 @@ function ManagerDashboard() {
 
   useEffect(() => {
     fetchEmpData();
+    getAdminId();
   }, []);
   // table data api
 
   // delete user
   const deleteData = async (userId) => {
     try {
-      console.log("Deleting user with ID:", userId); 
-      const response = await axios.delete(`http://localhost:8000/deleteEmployee/${userId}`);
+      console.log("Deleting user with ID:", userId);
+      const response = await axios.delete(`https://finance-backend-jvuy.onrender.com/deleteEmployee/${userId}`);
       console.log('Delete Response:', response.data);
 
       if (response.data.msg) {
         alert(response.data.msg);
-        fetchEmpData(); 
+        fetchEmpData();
       } else {
         alert("Failed to delete the employee. Please try again.");
       }
@@ -206,6 +212,19 @@ function ManagerDashboard() {
   };
 
   // delete user
+
+
+  // adminids
+
+  const getAdminId = async () => {
+    try {
+      const response = await axios.get("https://finance-backend-jvuy.onrender.com/adminId");
+      console.log("Admin ID:", response.data);
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching admin ID:", error);
+    }
+  }
 
 
   // logout``
@@ -370,7 +389,7 @@ function ManagerDashboard() {
                                 required="required"
                                 value={credit}
                                 onChange={(e) => setCredit(e.target.value)}
-                                placeholder="+ 9999"
+                                placeholder="Loan Amount"
                                 className="form-control"
                               />
                             </div>
@@ -384,7 +403,7 @@ function ManagerDashboard() {
                                 required="required"
                                 value={debit}
                                 onChange={(e) => setDebit(e.target.value)}
-                                placeholder="- 9999"
+                                placeholder="deducted amount"
                                 className="form-control"
                               />
                             </div>
@@ -398,7 +417,7 @@ function ManagerDashboard() {
                                 required="required"
                                 value={interest}
                                 onChange={(e) => setInterest(e.target.value)}
-                                placeholder="+ 9999"
+                                placeholder="Interest %"
                                 className="form-control"
                               />
                             </div>
@@ -412,7 +431,7 @@ function ManagerDashboard() {
                                 required="required"
                                 value={totalAmount}
                                 onChange={(e) => setTotalAmount(e.target.value)}
-                                placeholder="= 9999"
+                                placeholder="Total Amount"
                                 className="form-control"
                               />
                             </div>
