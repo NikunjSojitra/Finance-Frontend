@@ -5,10 +5,10 @@ import axios from "axios";
 import { BsEyeSlash, BsEye } from "react-icons/bs";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { v4 as uuidv4 } from "uuid"; 
+import { v4 as uuidv4 } from "uuid";
 
 function Signup() {
-  const [loading, setLoading] = useState(false); 
+  const [loading, setLoading] = useState(false);
   const [fname, setFname] = useState("");
   const [lname, setLname] = useState("");
   const [email, setEmail] = useState("");
@@ -39,10 +39,10 @@ function Signup() {
     let adminId = null;
 
     if (role === "Admin") {
-      adminId = uuidv4(); 
+      adminId = uuidv4();
       localStorage.setItem("adminId", adminId);
     } else {
-      adminId = localStorage.getItem("adminId"); 
+      adminId = localStorage.getItem("adminId");
     }
     axios
       .post("https://finance-backend-jvuy.onrender.com/signup", {
@@ -54,7 +54,7 @@ function Signup() {
         password,
         house,
         role,
-        adminId, 
+        adminId,
       })
       .then((response) => {
         if (response.data.msg) {
@@ -184,21 +184,21 @@ function Signup() {
                 </div>
 
                 <div className="col-md-4 d-flex align-items-start justify-content-start mb-3 ">
-                  <div>
-                  <input
-                    type="radio"
-                    id="admin"
-                    className="mx-2 "
-                    required="required"
-                    name="empType"  
-                    value="Admin"
-                    checked={role === "Admin"}
-                    onChange={(e) => setRole(e.target.value)}
-                  />
-                   <label className="form-check-label" htmlFor="admin">
+                  {/* <div>
+                    <input
+                      type="radio"
+                      id="admin"
+                      className="mx-2 "
+                      required="required"
+                      name="empType"
+                      value="Admin"
+                      checked={role === "Admin"}
+                      onChange={(e) => setRole(e.target.value)}
+                    />
+                    <label className="form-check-label" htmlFor="admin">
                       Admin
                     </label>
-                </div>
+                  </div> */}
                   <div>
                     <input
                       type="radio"

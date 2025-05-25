@@ -33,7 +33,7 @@ function Login() {
     setLoading(true);
     e.preventDefault();
     axios
-      .post("https://finance-backend-jvuy.onrender.com/login", {
+      .post(" https://finance-backend-jvuy.onrender.com/login", {
         mode: "no-cors",
         email: email,
         password: password,

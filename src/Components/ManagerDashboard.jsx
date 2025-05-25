@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 
 import React, { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { data, Link } from "react-router-dom";
 import axios from "axios";
 import editimg from "./../assets/edit.png";
 import deleteimg from "./../assets/delete.png";
@@ -40,6 +40,7 @@ function ManagerDashboard() {
   const [rowData, setRowData] = useState([]);
   const [selectedUser, setSelectedUser] = useState("");
   const [loader, setLoader] = useState(false);
+  const [deleteUser, setDeleteUser] = useState(false);
 
   const navigate = useNavigate();
   // Column Definitions: Defines the columns to be displayed.
@@ -82,9 +83,9 @@ function ManagerDashboard() {
               alt="Delete"
               style={{ width: '25px', height: '25px', cursor: 'pointer', marginTop: '7px' }}
               onClick={() => {
-                const userId = params.data.user._id;  // Extract the user ID
-                console.log('Deleting user with ID:', userId);  // Log to verify the ID
-                deleteData(userId);
+                setDeleteUser(params.data.user._id);
+                const deleteModal = new window.bootstrap.Modal(document.getElementById('deleteModal'));
+                deleteModal.show();
               }}
             />
           </div>
@@ -103,14 +104,13 @@ function ManagerDashboard() {
   // user finacial data api
 
   const handleSubmit = async (e) => {
-    setLoader(true);
-    const id = selectedUser.user._id;
-
     e.preventDefault();
+    setLoader(true);
 
-    // Prepare the data for the update
+    const id = selectedUser.user._id;
+    console.log('select user id :>> ', id);
     const empEditData = {
-      fname: fname,
+      fname,
       lname,
       email,
       mobile,
@@ -118,45 +118,53 @@ function ManagerDashboard() {
       debit,
       interest,
       totalAmount,
+      userId: id,
     };
 
     try {
-      // Perform the patch request to update employee data
+      // Update employee data
       const response = await axios.patch(
         `https://finance-backend-jvuy.onrender.com/updateEmpData/${id}`,
         empEditData
       );
 
-      if (response.data.msg) {
-        await addUserAmountFlow({
-          credit,
-          debit,
-          interest,
-          totalAmount,
-          userId: id,
-        });
-        setModal(!modal);
-        fetchEmpData();
-        setLoader(false);
+      console.log('response :>> ', response);
+
+      if (response.status === 200) {
+        // If employee update succeeds, then update user amount flow
+        try {
+          setModal(false);
+          await fetchEmpData();
+          console.log("User and cash flow updated successfully.");
+        } catch (postError) {
+          console.error("Error updating cash flow data:", postError);
+          alert("User data updated, but cash flow update failed.");
+        }
       } else {
-        alert(response.data.msg);
+        alert("Failed to update employee data.");
       }
     } catch (err) {
       console.error("Error updating employee data:", err);
+      alert("Something went wrong while updating the user.");
+    } finally {
+      setLoader(false);
     }
   };
 
-  const addUserAmountFlow = async (submitdata) => {
-    try {
-      const data = await axios.post(
-        "https://finance-backend-jvuy.onrender.com/updateEmpData/usercash",
-        submitdata
-      );
-      console.log("User Amount Flow Added:", data);
-    } catch (error) {
-      console.log("Error adding user amount flow:", error);
-    }
-  };
+
+  // const addUserAmountFlow = async (submitdata) => {
+  //   try {
+  //     const data = await axios.post(
+  //       "https://finance-backend-jvuy.onrender.com/updateEmpData/usercash",
+  //       submitdata
+  //     );
+
+  //     console.log("submit data", submitdata);
+  //     console.log("User Amount Flow Added:", data);
+  //   } catch (error) {
+  //     console.log("Error adding user amount flow:", error);
+  //   }
+  // };
   // finacial data api
 
   // table data api
@@ -200,8 +208,13 @@ function ManagerDashboard() {
       console.log('Delete Response:', response.data);
 
       if (response.data.msg) {
-        alert(response.data.msg);
+        const deleteModalEl = document.getElementById('deleteModal');
+        const modalInstance =  window.bootstrap.Modal.getInstance(deleteModalEl);
+        if (modalInstance) {
+          modalInstance.hide();
+        }
         fetchEmpData();
+
       } else {
         alert("Failed to delete the employee. Please try again.");
       }
@@ -451,6 +464,25 @@ function ManagerDashboard() {
           </div>
         </div>
       }
+
+      {/* delete modal */}
+      <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="exampleModalLabel">Delete Modal</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              Are you sure you want to delete this user?
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary" onClick={() => deleteData(deleteUser)}>Delete</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </>
   );
 }

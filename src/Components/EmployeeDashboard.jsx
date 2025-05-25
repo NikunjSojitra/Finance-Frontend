@@ -32,7 +32,7 @@ const EmployeeDashboard = () => {
 
   const { id } = useParams();
   const [payment, setPayment] = useState([]);
-  const [paydate, setPaydate] = useState([ new Date().toISOString().split("T")[0] ]);
+  const [paydate, setPaydate] = useState( new Date().toISOString().split("T")[0]);
   const [rowData, setRowData] = useState([]);
   const [empData, setEmpData] = useState([]);
   const [role, setRole] = useState("");
@@ -213,9 +213,8 @@ const EmployeeDashboard = () => {
         <section>
           <div className="container">
 
-            {role === "Admin" ?
-              <Link to='/manager-dashboard' className="btn btn-dark mb-3"> Dashboard </Link>
-              : ''}
+          <Link to='/manager-dashboard' className="btn btn-dark mb-3"> Dashboard </Link>
+            {/* {role === "Admin" ? : ''} */}
             <h3 className="text-center">- User's Dashboard - </h3>
 
             <div className="employee_data my-5">
@@ -286,9 +285,7 @@ const EmployeeDashboard = () => {
             </div>
 
             <hr />
-
-            {role === "Admin" ?
-             <form onSubmit={paymentSubmit}>
+<form onSubmit={paymentSubmit}>
              <div className="d-lg-flex d-sm-block gap-3">
                <input
                  type="number"
@@ -311,7 +308,9 @@ const EmployeeDashboard = () => {
                />
                <button type="submit" className="btn btn-success">Add</button>
              </div>
-           </form> : ''}
+           </form>
+
+            {/* {role === "Admin" ?: ''} */}
 
 
             <div style={{ height: 500, marginTop: "50px" }}>
