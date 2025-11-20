@@ -9,6 +9,8 @@ import { useEffect } from 'react';
 import { getToken, onMessage } from 'firebase/messaging';
 import { messaging } from '../firebase';
 import PendingUser from "./Components/PendingUser";
+import SuperAdmin from "./Components/SuperAdmin";
+import { ToastContainer } from "react-toastify";
 
 
 function App() {
@@ -16,7 +18,7 @@ function App() {
   const [websiteVisible, setWebsiteVisible] = useState(false);
 
   const handleClick = () => {
-    
+  
     setClickCount(prevClickCount => {
       const newClickCount = prevClickCount + 1;
       if (newClickCount >= 5) {
@@ -72,10 +74,13 @@ function App() {
     <>
       <div onClick={handleClick} className="App-header">
         {websiteVisible ? (
+          
           <BrowserRouter>
+                <ToastContainer />
             <Routes>
               <Route path="/" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
+              <Route path="/superadmin-dashboard" element={<SuperAdmin />} />
               <Route path="/manager-dashboard" element={<ManagerDashboard />} />
               <Route path="/pending-user" element={<PendingUser />} />
               <Route path="/employee-dashboard/:id" element={<EmployeeDashboard />} />

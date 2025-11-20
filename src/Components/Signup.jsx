@@ -30,7 +30,7 @@ function Signup() {
   const navigate = useNavigate();
 
   const submitData = async (e, signupUser) => {
-    if (!fname || !lname || !email || !mobile || !password || !house) {
+    if (!fname || !lname || !email || !mobile || !password || !house || !role) {
       alert("Please fill all the fields");
       return;
     }
@@ -57,7 +57,7 @@ function Signup() {
         adminId,
       })
       .then((response) => {
-        if (response.data.msg) {
+        if (response.data.msg == true) {
           navigate("/manager-dashboard");
           // if (response.data.data.role === "Admin") {
           //   console.warn(response.data);
@@ -69,7 +69,15 @@ function Signup() {
           //   console.warn("empRes", empRes);
           // }
         } else {
-          alert(response.data.msg);
+          toast.error("aAny one field invalid", {
+            position: "top-right",
+            autoClose: 5000, 
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });     
         }
       })
       .catch((err) => {
@@ -204,7 +212,7 @@ function Signup() {
                       type="radio"
                       id="user"
                       className="mx-2"
-                      required="required"
+                      required
                       name="empType"
                       value="User"
                       checked={role === "User"}

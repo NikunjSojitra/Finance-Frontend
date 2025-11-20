@@ -3,7 +3,8 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { BsEyeSlash, BsEye } from "react-icons/bs";
-
+import { toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 
 function Login() {
@@ -30,8 +31,8 @@ function Login() {
       alert("Please fill all the fields");
       return;
     }
-    setLoading(true);
     e.preventDefault();
+    // setLoading(true);
     axios
       .post(" https://finance-backend-jvuy.onrender.com/login", {
         mode: "no-cors",
@@ -41,22 +42,41 @@ function Login() {
       })
       .then((response) => {
         if (response.data.token) {
+          if (response.data.user.role === "User") {
+          console.log('emp', response.data.user.role); 
+          toast.error("User not authorized as Admin", {
+            position: "top-right",
+            autoClose: 5000, 
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });     
+         }
+          localStorage.removeItem("role");
           const matchingAdmin = adminId.find((admin) => admin.email === email);
+          console.log('matchingAdmin', matchingAdmin, response.data.user.role)
           if (matchingAdmin) {
             localStorage.setItem("adminId", matchingAdmin.adminId);
-          } if(adminId.email == email){
+          } 
+          if(adminId.email == email){
             localStorage.setItem("adminId", adminId.adminId);
           }
+          
           if (response.data.user.role == "Admin") {
+            console.log('admin', )
             navigate("/manager-dashboard");
             setLoading(false);
             localStorage.setItem("role", response.data.user.role);
-          } else {
-            let empRes = response.data.user;
-            navigate(`/employee-dashboard/${empRes._id}`, {
-              state: { empRes },
-            });
           }
+          else if(response.data.user.role == "superAdmin"){
+            console.log('super admin', )
+            navigate("/superadmin-dashboard");
+            setLoading(false);
+            localStorage.setItem("role", response.data.user.role);
+          }
+         
         } else {
           console.warn(response);
           alert(response.data.msg);
@@ -143,6 +163,7 @@ function Login() {
                           className="btn  login_btn"
                           style={{ width: "100%" }}
                           onClick={(e) => handleSubmit(e)}
+                          type="submit"
                         >
                           Login
                         </button>
